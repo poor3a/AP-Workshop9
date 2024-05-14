@@ -11,5 +11,8 @@ public class Main
         File[] files = folder.listFiles();
         assert files != null;
         es.execute(new ReadingFile(files[0]));
+
+
+        
     }
 }
