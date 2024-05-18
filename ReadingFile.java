@@ -3,19 +3,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ReadingFile implements Runnable
 {
-    File file;
-    ArrayList<String> lines;
-    int wordCount = 0;
-    String longestWord;
-    String shortestWord;
-    int allWordsLengthAvg = 0;
-    public ReadingFile(File file)
+    private File file;
+    private ArrayList<String> lines;
+    private AllFilesManager manager;
+    public ReadingFile(File file ,AllFilesManager manager)
     {
         this.file = file;
+        this.manager = manager;
     }
     @Override
     public void run()
@@ -23,6 +20,7 @@ public class ReadingFile implements Runnable
         try (FileInputStream fIn = new FileInputStream(file))
         {
             lines = (ArrayList<String>) Files.readAllLines(file.toPath());
+            manager.addInfo(getValues());
         }
         catch (IOException e)
         {
@@ -37,25 +35,21 @@ public class ReadingFile implements Runnable
     private String findLongestWord()
     {
         String result = ".";
-        String temp;
         for (String word : lines)
         {
-            temp = word;
-            if (temp.length() > result.length())
-                result = temp;
+            if (word.length() > result.length())
+                result = word;
         }
         return result;
     }
 
     private String findShortestWord()
     {
-        String result = ".";
-        String temp;
+        String result = ".......";
         for (String word : lines)
         {
-            temp = word;
-            if (temp.length() < result.length())
-                result = temp;
+            if (word.length() < result.length())
+                result = word;
         }
         return result;
     }
@@ -68,13 +62,13 @@ public class ReadingFile implements Runnable
         }
         return counter/countLines();
     }
-    public List<Object> giveResults()
+    public ArrayList<Object> getValues()
     {
-        List<Object> results = new ArrayList<>();
-        results.add(wordCount);
-        results.add(longestWord);
-        results.add(shortestWord);
-        results.add(allWordsLengthAvg);
+        ArrayList<Object> results = new ArrayList<>();
+        results.add(countLines());
+        results.add(findLongestWord());
+        results.add(findShortestWord());
+        results.add(findAvgLength());
         return results;
     }
 }

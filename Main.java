@@ -10,9 +10,19 @@ public class Main
         File folder = new File("src/path");
         File[] files = folder.listFiles();
         assert files != null;
-        es.execute(new ReadingFile(files[0]));
+        AllFilesManager manager = new AllFilesManager();
+        for (File file : files)
+        {
+            ReadingFile read = new ReadingFile(file ,manager);
+            es.execute(read);
+        }
+        es.shutdown();
+        while(!es.isTerminated())
+        {
+        }
+            for (Object o : manager.giveResults()) {
+                System.out.println(o);
+            }
 
-
-        
     }
 }
